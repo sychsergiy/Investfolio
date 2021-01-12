@@ -1,4 +1,4 @@
-package investfolio.fetchers;
+package investfolio.coinapi;
 
 import java.net.http.HttpResponse;
 

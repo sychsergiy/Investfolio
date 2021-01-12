@@ -1,4 +1,4 @@
-package investfolio.fetchers;
+package investfolio.coinapi;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,9 +16,9 @@ public class CoinApiClient {
     }
 
 
-    public HttpResponse<String> fetchCurrencyRate(String currency) throws CoinApiRequestFailed {
+    public HttpResponse<String> fetch(String url) throws CoinApiRequestFailed {
         var request = HttpRequest.newBuilder(
-                URI.create(String.format("%s/exchangerate/%s/USD", apiURL, currency)))
+                URI.create(String.format("%s/%s", apiURL, url)))
                 .header("accept", "application/json")
                 .header("X-CoinAPI-Key", this.secretKey)
                 .build();

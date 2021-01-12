@@ -1,4 +1,4 @@
-package investfolio.fetchers;
+package investfolio.coinapi;
 
 public class CoinApiRequestFailed extends Exception {
 }

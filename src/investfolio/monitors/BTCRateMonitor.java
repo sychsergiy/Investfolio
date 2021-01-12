@@ -2,8 +2,8 @@ package investfolio.monitors;
 
 import investfolio.AssetProfit;
 import investfolio.Rate;
-import investfolio.fetchers.BTCRateFetcher;
-import investfolio.fetchers.FailedToFetchAssetRateException;
+import investfolio.coinapi.CurrencyRateFetcher;
+import investfolio.coinapi.FailedToFetchCurrencyRateException;
 
 public class BTCRateMonitor {
     private final Rate initialAssetRate;
@@ -11,10 +11,10 @@ public class BTCRateMonitor {
     private final AssetProfit expectedProfit;
 
     private final ExpectedProfitAchievedHandler profitAchievedHandler;
-    private final BTCRateFetcher rateFetcher;
+    private final CurrencyRateFetcher rateFetcher;
 
     public BTCRateMonitor(
-            BTCRateFetcher rateFetcher,
+            CurrencyRateFetcher rateFetcher,
             ExpectedProfitAchievedHandler profitAchievedHandler,
             Rate initialAssetRate,
             AssetProfit expectedProfit,
@@ -27,8 +27,8 @@ public class BTCRateMonitor {
         this.expectedProfit = expectedProfit;
     }
 
-    private boolean checkRate() throws FailedToFetchAssetRateException {
-        var rate = this.rateFetcher.fetch();
+    private boolean checkRate() throws FailedToFetchCurrencyRateException {
+        var rate = this.rateFetcher.fetch("BTC");
         var profit = rate.calcProfit(this.initialAssetRate);
         if (profit.isProfitAchieved(this.expectedProfit)) {
             this.profitAchievedHandler.handle(profit);
@@ -47,7 +47,7 @@ public class BTCRateMonitor {
                             System.out.println("event successfully handled");
                             break;
                         }
-                    } catch (FailedToFetchAssetRateException e) {
+                    } catch (FailedToFetchCurrencyRateException e) {
                         e.printStackTrace();
                         break;
                     }

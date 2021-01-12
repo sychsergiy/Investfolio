@@ -1,7 +1,7 @@
 package investfolio;
 
-import investfolio.fetchers.BTCRateFetcher;
-import investfolio.fetchers.CoinApiClient;
+import investfolio.coinapi.CoinApiClient;
+import investfolio.coinapi.CurrencyRateFetcher;
 import investfolio.monitors.BTCRateMonitor;
 import investfolio.monitors.PrintHandler;
 
@@ -11,14 +11,14 @@ public class Main {
         String coinApiSecretKey = System.getenv("COIN_API_SECRET_KEY");
 
 
-        var fetcher = new BTCRateFetcher(
+        var fetcher = new CurrencyRateFetcher(
                 new CoinApiClient(coinApiSecretKey)
         );
 
 
         new BTCRateMonitor(
                 fetcher, new PrintHandler(),
-                Rate.create(40000), AssetProfit.createFromPercentageValue(-25), 100
+                Rate.create(40000), AssetProfit.createFromPercentageValue(-10), 100
         ).monitor();
     }
 }
