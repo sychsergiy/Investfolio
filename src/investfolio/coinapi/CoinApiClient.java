@@ -16,15 +16,19 @@ public class CoinApiClient {
     }
 
 
-    public HttpResponse<String> fetch(String url) throws CoinApiRequestFailed {
+    public String fetchJSON(String url) throws CoinApiRequestFailed, UnexpectedCurrencyRateResponseException {
         var request = HttpRequest.newBuilder(
                 URI.create(String.format("%s/%s", apiURL, url)))
                 .header("accept", "application/json")
                 .header("X-CoinAPI-Key", this.secretKey)
                 .build();
-
         try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new UnexpectedCurrencyRateResponseException(response);
+            }
+            return response.body();
+
         } catch (IOException | InterruptedException e) {
             var error = new CoinApiRequestFailed();
             error.initCause(e);

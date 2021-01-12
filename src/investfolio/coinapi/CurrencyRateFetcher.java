@@ -18,15 +18,11 @@ public class CurrencyRateFetcher {
 
     public Rate fetch(String currency) throws FailedToFetchCurrencyRateException {
         try {
-            var response = client.fetch(buildQueryString(currency));
-            if (response.statusCode() != 200) {
-                throw new UnexpectedCurrencyRateResponse(response);
-            }
-            JSONObject json = new JSONObject(response.body());
+            var json = new JSONObject(client.fetchJSON(buildQueryString(currency)));
             try {
                 return Rate.create(json.getFloat("rate"));
             } catch (JSONException e) {
-                throw new UnexpectedCurrencyRateResponse(response, e);
+                throw new UnexpectedCurrencyRateResponseDataException(json, e);
             }
         } catch (CoinApiRequestFailed e) {
             throw new FailedToFetchCurrencyRateException("Unable to fetch currency rate", e);
