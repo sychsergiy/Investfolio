@@ -2,8 +2,8 @@ package investfolio;
 
 import investfolio.coinapi.CoinApiClient;
 import investfolio.coinapi.CurrencyRateFetcher;
-import investfolio.monitors.CurrencyProfitMonitor;
 import investfolio.monitors.CurrencyProfitMonitorBuilder;
+import investfolio.monitors.IntervalTaskExecutor;
 import investfolio.monitors.PrintHandler;
 
 public class Main {
@@ -17,12 +17,14 @@ public class Main {
         );
 
 
-        new CurrencyProfitMonitorBuilder(fetcher, new PrintHandler(), 100)
+        new CurrencyProfitMonitorBuilder(
+                fetcher, new PrintHandler(), new IntervalTaskExecutor(100)
+        )
                 .setCurrency("BTC")
                 .setInitialRate(Rate.create(40000))
                 .setExpectedProfit(AssetProfit.createFromPercentageValue(-10))
                 .build()
-                .monitor();
+                .run();
     }
 }
 

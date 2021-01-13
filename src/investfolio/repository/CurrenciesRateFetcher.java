@@ -6,5 +6,5 @@ import java.util.Map;
 import java.util.Set;
 
 public interface CurrenciesRateFetcher {
-    Map<String, Rate> fetch(Set<String> currencies);
+    Map<String, Rate> fetch(Set<String> currencies);  // todo: add throws exception
 }

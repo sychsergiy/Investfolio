@@ -7,13 +7,12 @@ import investfolio.coinapi.CurrencyRateFetcher;
 public class CurrencyProfitMonitorBuilder {
     private final CurrencyProfitMonitor monitor;
 
-
     public CurrencyProfitMonitorBuilder(
             CurrencyRateFetcher rateFetcher,
             ExpectedProfitAchievedHandler profitAchievedHandler,
-            float checkAssetRateIntervalSeconds
+            IntervalTaskExecutor executor
     ) {
-        this.monitor = new CurrencyProfitMonitor(rateFetcher, profitAchievedHandler, checkAssetRateIntervalSeconds);
+        this.monitor = new CurrencyProfitMonitor(rateFetcher, profitAchievedHandler, executor);
     }
 
     public CurrencyProfitMonitorBuilder setExpectedProfit(AssetProfit expectedProfit) {

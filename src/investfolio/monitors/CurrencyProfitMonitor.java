@@ -8,7 +8,7 @@ import investfolio.coinapi.FailedToFetchCurrencyRateException;
 public class CurrencyProfitMonitor {
     private final CurrencyRateFetcher rateFetcher;
     private final ExpectedProfitAchievedHandler profitAchievedHandler;
-    private final float checkAssetRateIntervalSeconds;
+    private final IntervalTaskExecutor executor;
 
     private AssetProfit expectedProfit;
     private Rate initialAssetRate;
@@ -42,27 +42,10 @@ public class CurrencyProfitMonitor {
     public CurrencyProfitMonitor(
             CurrencyRateFetcher rateFetcher,
             ExpectedProfitAchievedHandler profitAchievedHandler,
-            float checkAssetRateIntervalSeconds
-    ) {
+            IntervalTaskExecutor executor) {
         this.rateFetcher = rateFetcher;
-        this.checkAssetRateIntervalSeconds = checkAssetRateIntervalSeconds;
         this.profitAchievedHandler = profitAchievedHandler;
-    }
-
-    public CurrencyProfitMonitor(
-            CurrencyRateFetcher rateFetcher,
-            ExpectedProfitAchievedHandler profitAchievedHandler,
-            Rate initialAssetRate,
-            AssetProfit expectedProfit,
-            float checkAssetRateIntervalSeconds,
-            String currency) {
-        this.rateFetcher = rateFetcher;
-        this.checkAssetRateIntervalSeconds = checkAssetRateIntervalSeconds;
-        this.profitAchievedHandler = profitAchievedHandler;
-
-        this.initialAssetRate = initialAssetRate;
-        this.expectedProfit = expectedProfit;
-        this.currency = currency;
+        this.executor = executor;
     }
 
     private boolean checkRate() throws FailedToFetchCurrencyRateException {
@@ -75,28 +58,7 @@ public class CurrencyProfitMonitor {
         return false;
     }
 
-    public void monitor() {
-        var runnable = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        if (checkRate()) {
-                            System.out.println("event successfully handled");
-                            break;
-                        }
-                    } catch (FailedToFetchCurrencyRateException e) {
-                        e.printStackTrace();
-                        break;
-                    }
-                    try {
-                        Thread.sleep((long) checkAssetRateIntervalSeconds * 1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        new Thread(runnable).start();
+    public void run() {
+        executor.run(this::checkRate);
     }
 }
