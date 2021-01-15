@@ -4,7 +4,7 @@ import investfolio.Rate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CurrencyRateFetcher {
+public class CurrencyRateFetcher implements investfolio.repository.CurrencyRateFetcher {
     private final CoinApiClient client;
     private static final String endpointURL = "exchangerate";
 
